@@ -1,0 +1,145 @@
+<div id="App" style="max-width: 960px;margin: 20px auto">
+  <h3># XX网络后台管理</h3>
+  <hr/>
+  <div class="mt-2 mb-4">
+    <button @click="catAll" type="button" class="btn btn-primary">查看所有用户</button>
+    <!-- TODO -->
+    <!-- <button @click="createUser" type="button" class="btn btn-secondary">手动创建用户</button> -->
+    <!-- <button @click="update" type="button" class="btn btn-danger">修改用户数据</button> -->
+    <!-- <button @click="catRes" type="button" class="btn btn-dark">查看预约</button> -->
+  </div>
+  <div class="modal" :style="{ display: isAdd ? 'block' : 'none' }">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">手动添加用户</h5>
+          <button type="button" @click="clearFormData" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input class="form-control mt-3" v-model="add_openid" type="text" placeholder="openid">
+          <input class="form-control mt-3" v-model="add_edu" type="text" placeholder="学历">
+          <input class="form-control mt-3" v-model="add_name" type="text" placeholder="姓名">
+          <input class="form-control mt-3" v-model="add_date" type="datetime" placeholder="生日">
+          <input class="form-control mt-3" v-model="add_gender" type="text" placeholder="性别">
+          <input class="form-control mt-3" v-model="add_phone" type="text" placeholder="手机号">
+          <input class="form-control mt-3" v-model="add_addr" type="text" placeholder="地址">
+        </div>
+        <div class="modal-footer">
+          <button @click="clearFormData" type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+          <button @click="formSubmit" type="button" class="btn btn-primary">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-if="userLists.length">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">openid</th>
+            <th scope="col">学历</th>
+            <th scope="col">姓名</th>
+            <th scope="col">生日</th>
+            <th scope="col">性别</th>
+            <th scope="col">手机号</th>
+            <th scope="col">地址</th>
+            <th scope="col">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in userLists" v-key="index" v-item="item">
+            <td>{{ item.id }}</td>
+            <td>{{ item.edution }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.date }}</td>
+            <td>{{ item.gender ? '男' : '女' }}</td>
+            <td>{{ item.phone }}</td>
+            <td>{{ item.addr }}</td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm">修改</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+</div>
+<!-- <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script> -->
+<script>
+  const createVue = new Vue({
+    el: '#App',
+    data: {
+      userLists: [],
+      isAdd: false,
+      add_addr: '',
+      add_date: '',
+      add_edu: '',
+      add_gender: '',
+      add_name: '',
+      add_openid: '',
+      add_phone: '',
+    },
+    methods: {
+      catAll(e) {
+        fetch('/api/users/fetch/all')
+        .then(r=> r.json())
+        .then(r=> {
+          this.userLists = r.lists
+        })
+      },
+      clearFormData() {
+        this.add_addr = ''
+        this.add_date = ''
+        this.add_edu = ''
+        this.add_gender = ''
+        this.add_name = ''
+        this.add_openid = ''
+        this.add_phone = ''
+        this.isAdd = false
+      },
+      createUser() {
+        this.isAdd = true
+      },
+      formSubmit() {
+        const data = {
+          id: this.add_openid,
+          name: this.add_name,
+          addr: this.add_addr,
+          date: this.add_date,
+          edution: this.add_edu,
+          gender: this.add_gender == '男' ? 1 : 0,
+          phone: this.add_phone,
+        }
+        for (let i in data) {
+          if (!data[i] && i != 'gender') {
+            alert('填写错误')
+            return 'failed'
+          }
+        }
+        fetch(`/api/users/add?id=${
+          data.id
+        }&edution=${ data.edution }&name=${
+          data.name
+        }&date=${ data.date }&gender=${
+          data.gender
+        }&phone=${
+          data.phone
+        }&addr=${ data.addr }`)
+        .then(r=> r.json())
+        .then(r=> {
+          if (!r.msg) {
+            alert('创建成功')
+          } else {
+            alert(r.msg)
+          }
+        })
+      },
+      update(e) {
+
+      },
+      catRes(e) {
+
+      }
+    }
+  })
+</script>

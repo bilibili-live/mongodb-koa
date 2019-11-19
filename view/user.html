@@ -1,0 +1,10 @@
+<% if (data) { %>
+  <h2>姓名: <%= data.name %></h2>
+  <p>性别: <%= !data.gender ? '男' : '女' %></p>
+  <p>手机: <%= data.phone %></p>
+  <p>学历: <%= data.edution %></p>
+  <p>地址: <%= data.addr %></p>
+  <p>出生日期: <%= (new Date(data.date)).toLocaleDateString() %></p>
+<% } else { %>
+   用户未填写数据
+<% } %>

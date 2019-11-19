@@ -1,0 +1,22 @@
+<div style="
+  margin: 8px;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+">
+  <% data.length >= 1 && data.forEach(item=> { %>
+    <div style="
+      border-bottom: 1px solid #ccc;
+      padding: 4px;
+    ">
+      <h3>姓名: <%= item.name %></h3>
+      <p>课程: <%= item.edu %></p>
+      <p>预约时间: <%= (new Date(item.date)).toLocaleDateString() %></p>
+      <p>联系方式: <%= item.phone %></p>
+      <p>备注: <%= item.note %></p>
+    </div>
+  <% }) %>
+  <% if (!data.length) { %>
+    用户没有预约记录
+  <% } %>
+</div>
